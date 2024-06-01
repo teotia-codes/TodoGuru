@@ -7,12 +7,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -58,12 +63,16 @@ fun TodoListPage() {
                             colors = CardDefaults.cardColors(containerColor = item.color)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = item.title,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    fontSize = 24.sp,
-                                    color = Color.White
-                                )
+
+
+
+                                   Text(
+                                       text = item.title,
+                                       fontWeight = FontWeight.ExtraBold,
+                                       fontSize = 24.sp,
+                                       color = Color.White
+                                   )
+
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = item.description,
@@ -81,8 +90,16 @@ fun TodoListPage() {
                                 }
 
                             }
+
+                            IconButton(onClick = { /*TODO*/ }) {
+                                Icon(imageVector = Icons.Default.Delete,
+                                    contentDescription = "Delete Todo",
+                                    tint = Color.DarkGray
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(10.dp))
+
                     }
                 })
             }
