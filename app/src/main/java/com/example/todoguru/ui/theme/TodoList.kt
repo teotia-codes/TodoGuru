@@ -16,10 +16,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todoguru.R
 import java.text.SimpleDateFormat
+
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +92,8 @@ fun TodoListPage() {
 
                             IconButton(onClick = {
                                 deleteTodoItem(item)
-                                todoList = TodoRepository.getTodoItems().toMutableStateList() // Refresh the todo list
+                                todoList = TodoRepository.getTodoItems()
+                                    .toMutableStateList() // Refresh the todo list
 
                             }) {
                                 Icon(
@@ -105,7 +110,13 @@ fun TodoListPage() {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Todo")
+                Icon(
+                    painter = painterResource(id = R.drawable.edit_note),
+                    contentDescription = "Edit Todo",
+                    modifier = Modifier
+                        .height(48.dp)
+                        .width(38.dp)
+                )
             }
         }
     )
@@ -159,7 +170,8 @@ fun TodoListPage() {
                             description = inputDescription,
                             color = inputColor
                         )
-                        todoList = TodoRepository.getTodoItems().toMutableStateList() // Refresh the todo list
+                        todoList = TodoRepository.getTodoItems()
+                            .toMutableStateList() // Refresh the todo list
                         inputTitle = ""
                         inputDescription = ""
                         showDialog = false
@@ -179,4 +191,11 @@ fun TodoListPage() {
 
 private fun deleteTodoItem(todoItem: Todo) {
     TodoRepository.deleteTodoItem(todoItem)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview
+@Composable
+fun p() {
+    TodoListPage()
 }
