@@ -65,13 +65,12 @@ fun TodoListPage() {
                             Column(modifier = Modifier.padding(16.dp)) {
 
 
-
-                                   Text(
-                                       text = item.title,
-                                       fontWeight = FontWeight.ExtraBold,
-                                       fontSize = 24.sp,
-                                       color = Color.White
-                                   )
+                                Text(
+                                    text = item.title,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 24.sp,
+                                    color = Color.White
+                                )
 
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
@@ -80,11 +79,15 @@ fun TodoListPage() {
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Row {
-                                    Text(text = "CreatedAt      ", color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = "CreatedAt      ",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                     Text(
                                         text = SimpleDateFormat("HH:mm aa, dd/MM", Locale.ENGLISH)
                                             .format(item.createdAt),
-                                        color = Color.White, 
+                                        color = Color.White,
                                         fontWeight = FontWeight.ExtraBold
                                     )
                                 }
@@ -92,7 +95,8 @@ fun TodoListPage() {
                             }
 
                             IconButton(onClick = { /*TODO*/ }) {
-                                Icon(imageVector = Icons.Default.Delete,
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
                                     contentDescription = "Delete Todo",
                                     tint = Color.DarkGray
                                 )
