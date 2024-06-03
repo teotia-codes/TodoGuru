@@ -1,17 +1,19 @@
 package com.example.todoguru.ui.theme
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.Instant
 
-import androidx.compose.ui.graphics.Color
+
 import java.util.Date
 
+import androidx.compose.ui.graphics.Color
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.util.*
+@Entity
 data class Todo(
-    val id: Long,
+    @PrimaryKey(autoGenerate = true)
+    val id: UUID = UUID.randomUUID(),
     val title: String,
     val description: String,
-    val createdAt: Date,
-    val color: Color
+    val color: Color,
+    val createdAt: Date
 )
-

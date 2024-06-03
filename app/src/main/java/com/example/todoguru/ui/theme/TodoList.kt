@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.todoguru.R
 import java.text.SimpleDateFormat
-
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +34,7 @@ fun TodoListPage() {
     var inputTitle by remember { mutableStateOf("") }
     var inputDescription by remember { mutableStateOf("") }
     var inputColor by remember { mutableStateOf(Color.Gray) } // Default color
+    var editingTodo by remember { mutableStateOf<Todo?>(null) }
 
     Scaffold(
         contentColor = Color.Black,
@@ -57,9 +57,15 @@ fun TodoListPage() {
                 LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
                     itemsIndexed(todoList) { index, item ->
                         Card(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                editingTodo = item
+                                inputTitle = item.title
+                                inputDescription = item.description
+                                inputColor = item.color
+                                showDialog = true
+                            },
                             modifier = Modifier.padding(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = item.color)
+                            colors = CardDefaults.cardColors(containerColor = item.color.copy(alpha = 0.65f))
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
@@ -109,7 +115,13 @@ fun TodoListPage() {
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
+            FloatingActionButton(onClick = {
+                editingTodo = null
+                inputTitle = ""
+                inputDescription = ""
+                inputColor = Color.Gray
+                showDialog = true
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.edit_note),
                     contentDescription = "Edit Todo",
@@ -124,7 +136,7 @@ fun TodoListPage() {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(text = "Add New Todo") },
+            title = { Text(text = if (editingTodo == null) "Add New Todo" else "Edit Todo") },
             text = {
                 Column {
                     OutlinedTextField(
@@ -165,11 +177,21 @@ fun TodoListPage() {
             confirmButton = {
                 Button(onClick = {
                     if (inputTitle.isNotEmpty() && inputDescription.isNotEmpty()) {
-                        TodoRepository.addTodoItem(
-                            title = inputTitle,
-                            description = inputDescription,
-                            color = inputColor
-                        )
+                        if (editingTodo == null) {
+                            TodoRepository.addTodoItem(
+                                title = inputTitle,
+                                description = inputDescription,
+                                color = inputColor
+                            )
+                        } else {
+                            TodoRepository.updateTodoItem(
+                                editingTodo!!.copy(
+                                    title = inputTitle,
+                                    description = inputDescription,
+                                    color = inputColor
+                                )
+                            )
+                        }
                         todoList = TodoRepository.getTodoItems()
                             .toMutableStateList() // Refresh the todo list
                         inputTitle = ""
@@ -177,7 +199,7 @@ fun TodoListPage() {
                         showDialog = false
                     }
                 }) {
-                    Text("Add")
+                    Text(if (editingTodo == null) "Add" else "Save")
                 }
             },
             dismissButton = {
