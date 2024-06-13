@@ -1,32 +1,34 @@
-import androidx.compose.ui.graphics.Color
-import com.example.todoguru.ui.theme.Todo
-import java.util.*
+/*
+class TodoRepository(private val todoDao: TodoDao) {
 
-object TodoRepository {
-    private val todoItems = mutableListOf<Todo>()
-
-    fun getTodoItems(): List<Todo> {
-        return todoItems
+    suspend fun getTodoItems(): List<Todo> {
+        return withContext(Dispatchers.IO) {
+            todoDao.getTodoItems()
+        }
     }
 
-    fun addTodoItem(title: String, description: String, color: Color) {
+    suspend fun addTodoItem(title: String, description: String, color: Color) {
         val newTodo = Todo(
             title = title,
             description = description,
             color = color,
             createdAt = Date()
         )
-        todoItems.add(newTodo)
+        withContext(Dispatchers.IO) {
+            todoDao.addTodoItem(newTodo)
+        }
     }
 
-    fun deleteTodoItem(todoItem: Todo) {
-        todoItems.remove(todoItem)
+    suspend fun deleteTodoItem(todoItem: Todo) {
+        withContext(Dispatchers.IO) {
+            todoDao.deleteTodoItem(todoItem)
+        }
     }
 
-    fun updateTodoItem(updatedTodo: Todo) {
-        val index = todoItems.indexOfFirst { it.id == updatedTodo.id }
-        if (index != -1) {
-            todoItems[index] = updatedTodo
+    suspend fun updateTodoItem(updatedTodo: Todo) {
+        withContext(Dispatchers.IO) {
+            todoDao.updateTodoItem(updatedTodo)
         }
     }
 }
+*/

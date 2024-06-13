@@ -1,4 +1,4 @@
-package com.example.todoguru.ui.theme
+package com.example.todoguru
 
 
 
@@ -8,12 +8,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
-@Entity
+@Entity(tableName = "todos_table")
 data class Todo(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val id: UUID = UUID.randomUUID(),
     val title: String,
     val description: String,
-    val color: Color,
+    val color: Int,
     val createdAt: Date
 )

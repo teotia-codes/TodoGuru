@@ -1,4 +1,5 @@
-package com.example.todoguru.ui.theme
+package com.example.todoguru
+
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,31 +11,36 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.todoguru.R
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodoListPage() {
-    var todoList by remember { mutableStateOf(TodoRepository.getTodoItems().toMutableStateList()) }
+fun TodoListPage(viewModel: TodoViewModel) {
+    val todoList by viewModel.todoList.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
     var inputTitle by remember { mutableStateOf("") }
     var inputDescription by remember { mutableStateOf("") }
     var inputColor by remember { mutableStateOf(Color.Gray) } // Default color
     var editingTodo by remember { mutableStateOf<Todo?>(null) }
+    val colors = listOf(
+        Color.Red.copy(alpha = 0.75f),
+        Color.Blue.copy(alpha = 0.75f),
+        Color.Green.copy(alpha = 0.75f),
+        Color.Yellow.copy(alpha = 0.75f),
+        Color.Magenta.copy(alpha = 0.75f)
+    )
 
     Scaffold(
         contentColor = Color.Black,
@@ -61,11 +67,11 @@ fun TodoListPage() {
                                 editingTodo = item
                                 inputTitle = item.title
                                 inputDescription = item.description
-                                inputColor = item.color
+                                inputColor = viewModel.pickRandomColor(colors)
                                 showDialog = true
                             },
                             modifier = Modifier.padding(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = item.color.copy(alpha = 0.65f))
+                            colors = CardDefaults.cardColors(containerColor = Color(item.color)) // Convert Int to Color
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
@@ -97,10 +103,7 @@ fun TodoListPage() {
                             }
 
                             IconButton(onClick = {
-                                deleteTodoItem(item)
-                                todoList = TodoRepository.getTodoItems()
-                                    .toMutableStateList() // Refresh the todo list
-
+                                viewModel.deleteTodoItem(todo = item)
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
@@ -178,25 +181,23 @@ fun TodoListPage() {
                 Button(onClick = {
                     if (inputTitle.isNotEmpty() && inputDescription.isNotEmpty()) {
                         if (editingTodo == null) {
-                            TodoRepository.addTodoItem(
+                            viewModel.addTodoItem(
                                 title = inputTitle,
                                 description = inputDescription,
-                                color = inputColor
+                                color = inputColor,
                             )
                         } else {
-                            TodoRepository.updateTodoItem(
-                                editingTodo!!.copy(
-                                    title = inputTitle,
-                                    description = inputDescription,
-                                    color = inputColor
-                                )
-                            )
+                            viewModel.updateTodoItem(editingTodo!!.copy(
+                                title = inputTitle,
+                                description = inputDescription,
+                                color = inputColor.value.toInt() // Convert Color to Int
+                            ))
                         }
-                        todoList = TodoRepository.getTodoItems()
-                            .toMutableStateList() // Refresh the todo list
+
                         inputTitle = ""
                         inputDescription = ""
                         showDialog = false
+
                     }
                 }) {
                     Text(if (editingTodo == null) "Add" else "Save")
@@ -209,15 +210,4 @@ fun TodoListPage() {
             }
         )
     }
-}
-
-private fun deleteTodoItem(todoItem: Todo) {
-    TodoRepository.deleteTodoItem(todoItem)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun p() {
-    TodoListPage()
 }
